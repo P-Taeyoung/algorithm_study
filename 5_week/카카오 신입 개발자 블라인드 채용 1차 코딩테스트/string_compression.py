@@ -57,6 +57,7 @@ def string_compression(string):
         if cur_min_total_length <= next_unit_min_total_length:
             return cur_min_total_length
 
+    return cur_min_total_length
 ### 강의해설
 ## 모든 경우에서 가장 압축을 많이 시킨 문자열의 길이를 반환해야 함.
 
@@ -70,3 +71,4 @@ print("정답 = 8 / 현재 풀이 값 = ", string_compression('abcabcdede'))
 print("정답 = 14 / 현재 풀이 값 = ", string_compression('abcabcabcabcdededededede'))
 print("정답 = 17 / 현재 풀이 값 = ", string_compression('xababcdcdababcdcd'))
 print("정답 = 3 / 현재 풀이 값 = ", string_compression('DDDDDDDDDD'))
+print("정답 = 3 / 현재 풀이 값 = ", string_compression('D'))
