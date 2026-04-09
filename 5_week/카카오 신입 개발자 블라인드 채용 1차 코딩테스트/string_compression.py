@@ -26,7 +26,8 @@ def string_compression(string):
     # # 해당 단위 압축후 길이와 그 전에 측정했던 최소 길이 중 작은 값 비교
     #  더 작은 값의 길이가 다음 단위의 최솟값보다 작다면 멈춤
     #  다음단위의 최솟값 = len(str(입력받은 문자열 // 다음 단위)) + 다음 단위 + (입력받은 문자열 % 다음 단위)
-
+    if string == "":
+        return 0
 
     ###
     unit = 1 # 압축단위
@@ -71,4 +72,4 @@ print("정답 = 8 / 현재 풀이 값 = ", string_compression('abcabcdede'))
 print("정답 = 14 / 현재 풀이 값 = ", string_compression('abcabcabcabcdededededede'))
 print("정답 = 17 / 현재 풀이 값 = ", string_compression('xababcdcdababcdcd'))
 print("정답 = 3 / 현재 풀이 값 = ", string_compression('DDDDDDDDDD'))
-print("정답 = 3 / 현재 풀이 값 = ", string_compression('D'))
+print("정답 = 4 / 현재 풀이 값 = ", string_compression('DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'))
