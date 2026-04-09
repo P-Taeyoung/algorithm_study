@@ -54,22 +54,23 @@ def string_compression(string):
         cur_total_length = n_length + len_str - minus_length # 현재 단위 압축 진행 후 총길이
         cur_min_total_length = min(cur_min_total_length, cur_total_length) # 지금까지 단위 길이 중 최솟값
         unit += 1 #다음 단위
-        next_unit_min_total_length = len(str(len_str // unit)) + unit + (len_str % unit) # 다음단위 총길이 최솟값
-        if cur_min_total_length <= next_unit_min_total_length:
-            return cur_min_total_length
-
+        # next_unit_min_total_length = len(str(len_str // unit)) + unit + (len_str % unit) # 다음단위 총길이 최솟값
+        # if cur_min_total_length <= next_unit_min_total_length:
+        #     return cur_min_total_length
+        # => 나머지 값때문에 그 다음 단위의 최솟값보다 나중 단위의 최솟값이 작을 수 있음.
+        # ex) 12 길이라면 5단위일 때 최솟값 = 1 + 5 + 2(나머지) = 8, 6단위일 때 최솟값 = 1 + 6 = 7
     return cur_min_total_length
 ### 강의해설
 ## 모든 경우에서 가장 압축을 많이 시킨 문자열의 길이를 반환해야 함.
 
-print(string_compression(input))  # 14 가 출력되어야 합니다!
+# print(string_compression(input))  # 14 가 출력되어야 합니다!
 
-print("정답 = 3 / 현재 풀이 값 = ", string_compression("JAAA"))
-print("정답 = 9 / 현재 풀이 값 = ", string_compression("AZAAAZDWAAA"))
-print("정답 = 12 / 현재 풀이 값 = ", string_compression('BBAABAAADABBBD'))
-print("정답 = 9 / 현재 풀이 값 = ", string_compression('ababcdcdababcdcd'))
-print("정답 = 8 / 현재 풀이 값 = ", string_compression('abcabcdede'))
-print("정답 = 14 / 현재 풀이 값 = ", string_compression('abcabcabcabcdededededede'))
-print("정답 = 17 / 현재 풀이 값 = ", string_compression('xababcdcdababcdcd'))
-print("정답 = 3 / 현재 풀이 값 = ", string_compression('DDDDDDDDDD'))
-print("정답 = 4 / 현재 풀이 값 = ", string_compression('DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'))
+# print("정답 = 3 / 현재 풀이 값 = ", string_compression("JAAA"))
+# print("정답 = 9 / 현재 풀이 값 = ", string_compression("AZAAAZDWAAA"))
+# print("정답 = 12 / 현재 풀이 값 = ", string_compression('BBAABAAADABBBD'))
+# print("정답 = 9 / 현재 풀이 값 = ", string_compression('ababcdcdababcdcd'))
+# print("정답 = 8 / 현재 풀이 값 = ", string_compression('abcabcdede'))
+# print("정답 = 14 / 현재 풀이 값 = ", string_compression('abcabcabcabcdededededede'))
+# print("정답 = 17 / 현재 풀이 값 = ", string_compression('xababcdcdababcdcd'))
+# print("정답 = 3 / 현재 풀이 값 = ", string_compression('DDDDDDDDDD'))
+print("정답 = 7 / 현재 풀이 값 = ", string_compression('aaabbbaaabbb'))
