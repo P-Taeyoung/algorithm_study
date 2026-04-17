@@ -136,3 +136,12 @@ start_horse_location_and_directions = [
     [2, 1, 2]
 ]
 print("정답 = 3 / 현재 풀이 값 = ", get_game_over_turn_count(k, chess_map, start_horse_location_and_directions))
+
+
+game_map = [
+    ["#", "#", "#", "#", "#"],
+    ["#", ".", ".", "B", "#"],
+    ["#", ".", "#", ".", "#"],
+    ["#", "R", "O", ".", "#"],
+    ["#", "#", "#", "#", "#"],
+]
