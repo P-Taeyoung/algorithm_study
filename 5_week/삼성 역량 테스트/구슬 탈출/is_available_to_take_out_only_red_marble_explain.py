@@ -26,136 +26,70 @@ game_map = [
 # 움직이기 전 해당 방향에 장애물이 있으면 해당 구슬은 위치 그대로 움직일 수 있는 구슬만 진행한 후 위치정보를 다시 큐에 삽입
 #
 
-def is_available_to_take_out_only_red_marble(game_map):
-    # 구현해보세요!
-    #현재 게임 맵 상의 구멍위치와 구슬 위치 초기화
-    o = []
-    r = []
-    b = []
-    find_init_loc = [False, False, False]
-    for i in range(len(game_map)):
-        if "O" in game_map[i]:
-            idx = game_map[i].index("O")
-            o.append(i)
-            o.append(idx)
-            find_init_loc[0] = True
-        if "R" in game_map[i]:
-            idx = game_map[i].index("R")
-            r.append(i)
-            r.append(idx)
-            find_init_loc[1] = True
-        if "B" in game_map[i]:
-            idx = game_map[i].index("B")
-            b.append(i)
-            b.append(idx)
-            find_init_loc[2] = True
-        if False not in find_init_loc:
-            break
-    answer = -1
-    queue = deque()
-    queue.append((r,b,game_map))
-    cnt = 1
-    # 탐색한 위치는 다시 탐색하지 않게 하기 위해
-    visited = []
+def is_available_to_take_out_only_red_marble(board):
 
-    while cnt < 10:
-        for i in range(len(queue)):
-            red, blue, cur_map = queue.popleft()
-            for j in range(4):
-                new_red, new_blue, cur_map, is_red_goal, is_blue_goal = return_next_loc(cur_map, red, blue, j)
-                if is_blue_goal:
-                    continue
-                elif is_red_goal:
-                    return cnt
-                else:
-                    if [new_red, new_blue] not in visited:
-                        visited.append([new_red, new_blue])
-                        queue.append((new_red, new_blue, cur_map))
-        cnt += 1
+    # 초기 위치 찾기 (함수 내부에서 한 번만 수행)
+    rr, rc, br, bc = 0, 0, 0, 0
+    for r in range(len(board)):
+        for c in range(len(board[0])):
+            if board[r][c] == 'R':
+                rr, rc = r, c
+            elif board[r][c] == 'B':
+                br, bc = r, c
 
-    return answer
+    # 맵에서 구슬은 지워주는 게 편합니다 (좌표로만 관리하기 때문)
+    board[rr][rc] = '.'
+    board[br][bc] = '.'
 
-def return_next_loc(game_map, red, blue, direction):
-    # 오른쪽, 왼쪽, 아래, 위
-    dr = [0, 0, -1, 1]
+    return bfs(board, rr, rc, br, bc)
+
+
+def bfs(board, rr, rc, br, bc):
+    q = deque([(rr, rc, br, bc, 1)])
+    visited = set([(rr, rc, br, bc)])  # set이 리스트보다 훨씬 빠름
+
+    dr = [0, 0, 1, -1]
     dc = [1, -1, 0, 0]
 
-    # 구슬이 해당 방향으로 움직였을 때 구멍에 빠지는 지 여부
-    is_red_goal = False
-    is_blue_goal = False
+    while q:
+        curr_rr, curr_rc, curr_br, curr_bc, depth = q.popleft()
 
-    # 현재 구슬의 위치
-    cur_red_row = red[0]
-    cur_red_col = red[1]
-    cur_blue_row = blue[0]
-    cur_blue_col = blue[1]
-
-    # 경우의 수마다 맵 현황도 달라짐
-    # next_map = game_map => 참조로 같은 값을 두변수가 가르키는 것임
-    # game_map과 똑같이 생겼지만, 메모리 주소는 완전히 다른 새로운 배열 생성
-    cur_map = copy.deepcopy(game_map)
-
-    while True:
-        # 다음 위치 미리 확인
-        next_red_row = cur_red_row + dr[direction]
-        next_red_col = cur_red_col + dc[direction]
-        next_blue_row = cur_blue_row + dr[direction]
-        next_blue_col = cur_blue_col + dc[direction]
-
-        # 두 구슬 모두 움직이지 못하는 경우에 멈추고 그 때 구슬 위치를 반환
-        # 두 구슬 모두 벽에 막혔을 때
-        if cur_map[next_red_row][next_red_col] == "#" and cur_map[next_blue_row][next_blue_col] == "#":
+        if depth > 10:  # 10번 넘어가면 중단
             break
-        # 다른 구슬에 막혀있고 다른 구슬은 벽에 막혔을 때
-        elif cur_map[next_red_row][next_red_col] == "B" and cur_map[next_blue_row][next_blue_col] == "#":
-            break
-        elif cur_map[next_red_row][next_red_col] == "#" and cur_map[next_blue_row][next_blue_col] == "R":
-            break
-        # 다른 구슬은 구멍으로 빠져나갔고 다른 구슬은 벽에 막혔을 때
-        elif cur_map[next_red_row][next_red_col] == "#" and is_blue_goal:
-            break
-        elif cur_map[next_blue_row][next_blue_col] == "#" and is_red_goal:
-            break
-        # 한 쪽 구슬이 먼저 구멍에 빠지는 경우
-        elif cur_map[next_blue_row][next_blue_col] == "O" and not is_blue_goal:
-            is_blue_goal = True
-            cur_map[cur_blue_row][cur_blue_col] = "."
-        elif cur_map[next_red_row][next_red_col] == "O" and not is_red_goal:
-            is_red_goal = True
-            cur_map[cur_red_row][cur_red_col] = "."
-        else:
-            #한 쪽만 움직일 수 있는 경우
-            #다른 구슬이 벽때문에 못 움직이거나 이미 구멍에 들어간 경우
-            if game_map[next_blue_row][next_blue_col] == "#" or is_blue_goal:
-                cur_map[cur_red_row][cur_red_col] = "."
-                cur_red_row += dr[direction]
-                cur_red_col += dc[direction]
-                cur_map[cur_red_row][cur_red_col] = "R"
-            elif game_map[next_red_row][next_red_col] == "#" or is_red_goal:
-                cur_map[cur_blue_row][cur_blue_col] = "."
-                cur_blue_row += dr[direction]
-                cur_blue_col += dc[direction]
-                cur_map[cur_blue_row][cur_blue_col] = "B"
-            #모두 움직일 수 있는 경우
-            else:
-                # 실제 구슬 위치 변경
-                # 1. 구슬이 지나간 자리는 비어있음으로 변경
-                cur_map[cur_red_row][cur_red_col] = "."
-                cur_map[cur_blue_row][cur_blue_col] = "."
-                # 2. 구슬 위치 옮김
-                cur_red_row += dr[direction]
-                cur_red_col += dc[direction]
-                cur_blue_row += dr[direction]
-                cur_blue_col += dc[direction]
-                # 3. 옮긴 위치에 구슬 표기
-                cur_map[cur_red_row][cur_red_col] = "R"
-                cur_map[cur_blue_row][cur_blue_col] = "B"
 
-    new_red = cur_red_row, cur_red_col
-    new_blue = cur_blue_row, cur_blue_col
+        for i in range(4):
+            # 1. 빨간 구슬 이동
+            nrr, nrc, r_cnt = move(board, curr_rr, curr_rc, dr[i], dc[i])
+            # 2. 파란 구슬 이동
+            nbr, nbc, b_cnt = move(board, curr_br, curr_bc, dr[i], dc[i])
 
-    return new_red, new_blue, cur_map, is_red_goal, is_blue_goal
+            if board[nbr][nbc] == 'O':  # 파란 구슬 빠지면 실패
+                continue
+            if board[nrr][nrc] == 'O':  # 빨간 구슬만 빠지면 성공
+                return depth
 
+            if nrr == nbr and nrc == nbc:  # 겹쳤을 때 처리
+                # cnt는 구슬이 이동하는 거리이니 거리가 짧은 구슬이 해당 위치에 더 먼저 도착
+                # 따라서 cnt가 더 큰쪽이 해당 위치에서 그 전 위치로 움직여야 함.
+                if r_cnt > b_cnt:
+                    nrr -= dr[i]; nrc -= dc[i]
+                else:
+                    nbr -= dr[i]; nbc -= dc[i]
+
+            if (nrr, nrc, nbr, nbc) not in visited:
+                visited.add((nrr, nrc, nbr, nbc))
+                q.append((nrr, nrc, nbr, nbc, depth + 1))
+
+    return -1
+
+
+def move(board, r, c, dr, dc):
+    count = 0
+    while board[r + dr][c + dc] != '#' and board[r][c] != 'O':
+        r += dr
+        c += dc
+        count += 1
+    return r, c, count
 
 
 
@@ -231,7 +165,7 @@ print("정답 = -1 / 현재 풀이 값 = ", is_available_to_take_out_only_red_ma
 
 game_map = [
     ['#', '#', '#', '#', '#', '#', '#'],
-    ['#', 'R', '.', 'O', '.', 'B', '#'],
+    ['#', '.', 'R', 'O', 'B', '.', '#'],
     ['#', '#', '#', '#', '#', '#', '#']
 ]
 print("정답 = 1 / 현재 풀이 값 = ", is_available_to_take_out_only_red_marble(game_map))
@@ -255,6 +189,21 @@ print("정답 = 7 / 현재 풀이 값 = ", is_available_to_take_out_only_red_mar
 game_map = [
     ['#', '#', '#', '#', '#', '#', '#', '#', '#', '#'],
     ['#', '.', 'O', '.', '.', '.', '.', 'R', 'B', '#'],
+    ['#', '#', '#', '#', '#', '#', '#', '#', '#', '#']
+]
+print("정답 = -1 / 현재 풀이 값 = ", is_available_to_take_out_only_red_marble(game_map))
+
+game_map = [
+    ['#', '#', '#', '#', '#', '#', '#', '#', '#', '#'], # 0
+    ['#', 'R', '.', '.', '.', '.', '.', '.', 'B', '#'], # 1 (우)
+    ['#', '#', '#', '#', '#', '#', '#', '#', '.', '#'], # 2 (하)
+    ['#', '.', '.', '.', '.', '.', '.', '.', '.', '#'], # 3 (좌)
+    ['#', '.', '#', '#', '#', '#', '#', '#', '#', '#'], # 4 (하)
+    ['#', '.', '.', '.', '.', '.', '.', '.', '.', '#'], # 5 (우)
+    ['#', '#', '#', '#', '#', '#', '#', '#', '.', '#'], # 6 (하)
+    ['#', '.', '.', '.', '.', '.', '.', '.', '.', '#'], # 7 (좌)
+    ['#', '.', '#', '#', '#', '#', '#', '#', '#', '#'], # 8 (하)
+    ['#', 'O', '.', '.', '.', '.', '.', '.', '.', '#'], # 9 (좌) 골인!
     ['#', '#', '#', '#', '#', '#', '#', '#', '#', '#']
 ]
 print("정답 = -1 / 현재 풀이 값 = ", is_available_to_take_out_only_red_marble(game_map))
