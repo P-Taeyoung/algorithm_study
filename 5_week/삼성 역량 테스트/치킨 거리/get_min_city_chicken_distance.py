@@ -10,9 +10,7 @@ city_map = [
     [0, 0, 1, 0, 0],
     [0, 0, 0, 0, 2],
 ]
-from itertools import combinations
 # 내풀이
-# 프로그래머스 완전범죄와 비슷한 문제인듯 함.
 # M개 만큼 치킨집의 조합 뽑음.
 # 각 집마다 조합에 해당하는 치킨 집 중 가장 작은 숫자 고름
 # 가장 작은 숫자를 고를 때는 미리 거리 순으로 정렬시켜놓은 딕셔너리(치킨집 : 거리)를 통해 바로
@@ -34,7 +32,7 @@ def get_min_city_chicken_distance(n, m, city_map):
             r2, c2 = chicken_store
             city_p_dict[chicken_store] = abs(r1 - r2) + abs(c1 - c2)
         distances.append(city_p_dict)
-
+    # itertools.combinations(리스트, 정수) 리스트 중에서 정수 개를 뽑아 쓰는 모든 조합을 구할 수 있음.
     combination_of_m = list(itertools.combinations(chicken_stores, m))
 
     min_cum_distance = sys.maxsize
