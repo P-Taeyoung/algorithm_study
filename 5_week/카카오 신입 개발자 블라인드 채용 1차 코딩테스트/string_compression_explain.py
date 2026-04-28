@@ -37,3 +37,6 @@ print(string_compression(input))  # 14 가 출력되어야 합니다!
 print("정답 = 3 / 현재 풀이 값 = ", string_compression("JAAA"))
 print("정답 = 9 / 현재 풀이 값 = ", string_compression("AZAAAZDWAAA"))
 print("정답 = 12 / 현재 풀이 값 = ", string_compression('BBAABAAADABBBD'))
+str = "DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD"
+print(len(str))
+print("정답 = 12 / 현재 풀이 값 = ", string_compression(str))
