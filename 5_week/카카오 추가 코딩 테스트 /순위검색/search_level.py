@@ -39,10 +39,13 @@ def solution(info, query):
                     for l in [info_keys[3], "-"]:
                         num_of_conditions[(i, j, k, l)].append(info_score)
 
-    # 모든 조건들에 대한 점수 리스트 정렬
+    # 이분탐색을 위해 모든 조건들에 대한 점수 리스트 정렬
     for scores in num_of_conditions.values():
         scores.sort()
 
+    # 이분탐색으로 특정 점수(타겟)의 최소 인덱스를 찾음
+    # bisect_left => 정렬된 리스트에서 특정 타겟 값을 삽입할 때, 정렬 상태를 유지할 수 있는 가장 왼쪽 인덱스를 찾아주는 함수 즉 동일값이 여러개 있을 때 가장 왼쪽
+    # bisect_right => 가장 오른쪽
     for one_query in query:
         query_keys, query_score = make_query_key_form(one_query)
         cnt = 0
